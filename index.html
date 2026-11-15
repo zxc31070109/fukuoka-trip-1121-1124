@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <title>福岡自由行｜11/21–11/24</title>
+  <style>
+    :root {
+      --bg: #faf9f6;
+      --surface: #ffffff;
+      --ink: #181512;
+      --muted: #78716a;
+      --accent: #b8422a;
+      --accent-soft: #fdf0ed;
+      --gold: #a37415;
+      --gold-soft: #fbf5e6;
+      --line: #eae5dc;
+      --radius: 22px;
+      --safe-top: env(safe-area-inset-top, 0px);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html {
+      background: var(--bg);
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang TC", "Noto Sans TC", sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Centered mobile-first container (looks great on iPhone 15 Pro 393px & scales gracefully on desktop) */
+    .app {
+      max-width: 540px;
+      margin: 0 auto;
+      padding: calc(20px + var(--safe-top)) 20px calc(110px + var(--safe-bottom));
+    }
+
+    /* Minimalist Header */
+    .header {
+      padding: 8px 4px 24px;
+    }
+
+    .eyebrow {
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+
+    .header h1 {
+      margin: 0 0 12px;
+      font-size: 30px;
+      font-weight: 800;
+      line-height: 1.22;
+      letter-spacing: -0.025em;
+    }
+
+    .meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .pill {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--muted);
+      background: var(--surface);
+      border: 1px solid var(--line);
+      padding: 6px 12px;
+      border-radius: 999px;
+    }
+
+    .hotel-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 14px 16px;
+      text-decoration: none;
+      color: var(--ink);
+    }
+
+    .hotel-bar strong {
+      display: block;
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .hotel-bar span {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .hotel-arrow {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--accent);
+      white-space: nowrap;
+    }
+
+    /* Segmented Day Switcher */
+    .day-nav {
+      position: sticky;
+      top: calc(10px + var(--safe-top));
+      z-index: 30;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+      padding: 6px;
+      margin-bottom: 24px;
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      box-shadow: 0 8px 24px rgba(24, 21, 18, 0.06);
+    }
+
+    .day-tab {
+      appearance: none;
+      border: none;
+      background: transparent;
+      border-radius: 13px;
+      padding: 10px 4px;
+      cursor: pointer;
+      color: var(--muted);
+      transition: all 0.18s ease;
+      text-align: center;
+    }
+
+    .day-tab .d-num {
+      display: block;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .day-tab .d-date {
+      display: block;
+      font-size: 11px;
+      margin-top: 1px;
+      opacity: 0.85;
+    }
+
+    .day-tab.active {
+      background: var(--ink);
+      color: #fff;
+    }
+
+    /* Day Hero Title */
+    .day-intro {
+      padding: 4px 4px 20px;
+    }
+
+    .day-intro h2 {
+      margin: 0 0 8px;
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      line-height: 1.3;
+    }
+
+    .day-note {
+      margin: 0;
+      font-size: 15px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    /* Map Card */
+    .map-card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 14px;
+      margin-bottom: 28px;
+      box-shadow: 0 12px 32px rgba(24, 21, 18, 0.04);
+    }
+
+    .map-touch {
+      border-radius: 14px;
+      overflow: hidden;
+      background: #f3efe8;
+      cursor: zoom-in;
+    }
+
+    .map-touch img {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    .map-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 4px 2px;
+      gap: 10px;
+    }
+
+    .map-hint {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .map-btns {
+      display: flex;
+      gap: 8px;
+    }
+
+    .chip-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 38px;
+      padding: 0 14px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: var(--surface);
+      color: var(--ink);
+      font-size: 13px;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .chip-btn.dark {
+      background: var(--ink);
+      border-color: var(--ink);
+      color: #fff;
+    }
+
+    /* Minimalist Large-Type Event Cards */
+    .section-label {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin: 0 4px 14px;
+    }
+
+    .cards-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .event-card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: 0 8px 24px rgba(24, 21, 18, 0.03);
+      transition: opacity 0.2s ease, transform 0.15s ease;
+    }
+
+    .event-card.done {
+      opacity: 0.52;
+    }
+
+    .event-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .time-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .step-badge {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: #fff;
+      font-size: 13px;
+      font-weight: 800;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .time-text {
+      font-size: 16px;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      color: var(--ink);
+    }
+
+    .done-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      min-height: 36px;
+      padding: 0 12px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: var(--bg);
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--muted);
+      cursor: pointer;
+    }
+
+    .done-toggle input {
+      accent-color: var(--ink);
+      width: 16px;
+      height: 16px;
+      margin: 0;
+    }
+
+    .event-title {
+      margin: 0 0 6px;
+      font-size: 20px;
+      font-weight: 800;
+      line-height: 1.35;
+      letter-spacing: -0.015em;
+    }
+
+    .event-place {
+      font-size: 15px;
+      color: var(--muted);
+      margin-bottom: 14px;
+    }
+
+    .info-chips {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .info-line {
+      font-size: 14px;
+      line-height: 1.5;
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: var(--bg);
+      color: var(--ink);
+    }
+
+    .info-line.tip {
+      background: var(--gold-soft);
+      color: #704f0b;
+    }
+
+    .nav-action {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      min-height: 44px;
+      border-radius: 12px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-size: 15px;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    /* Minimalist Tips Accordion */
+    .tips-wrap {
+      margin-top: 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    details.tip-box {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 16px 20px;
+    }
+
+    details.tip-box summary {
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      list-style: none;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    details.tip-box summary::-webkit-details-marker {
+      display: none;
+    }
+
+    details.tip-box summary::after {
+      content: "+";
+      font-size: 20px;
+      font-weight: 400;
+      color: var(--muted);
+    }
+
+    details.tip-box[open] summary::after {
+      content: "−";
+    }
+
+    details.tip-box ul {
+      margin: 14px 0 2px;
+      padding-left: 18px;
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    details.tip-box li + li {
+      margin-top: 6px;
+    }
+
+    /* Sticky Bottom Bar for One-Handed iPhone Use */
+    .bottom-dock {
+      position: fixed;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: calc(14px + var(--safe-bottom));
+      width: min(calc(100% - 32px), 500px);
+      display: grid;
+      grid-template-columns: 1fr 1.2fr 1fr;
+      gap: 8px;
+      padding: 8px;
+      background: rgba(24, 21, 18, 0.92);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-radius: 999px;
+      box-shadow: 0 14px 36px rgba(0, 0, 0, 0.22);
+      z-index: 40;
+    }
+
+    .dock-btn {
+      appearance: none;
+      border: none;
+      background: transparent;
+      color: #fff;
+      min-height: 44px;
+      border-radius: 999px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .dock-btn:disabled {
+      opacity: 0.35;
+      cursor: default;
+    }
+
+    .dock-btn.center {
+      background: var(--accent);
+    }
+
+    /* Pinch-Zoomable Lightbox */
+    .lightbox {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 13, 12, 0.94);
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: calc(16px + var(--safe-top)) 12px calc(24px + var(--safe-bottom));
+      z-index: 999;
+    }
+
+    .lightbox.open {
+      display: flex;
+    }
+
+    .lightbox-bar {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 13px;
+    }
+
+    .lightbox-close {
+      min-height: 40px;
+      padding: 0 16px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      background: rgba(255, 255, 255, 0.14);
+      color: #fff;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .lightbox-scroll {
+      width: 100%;
+      flex: 1;
+      overflow: auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .lightbox-scroll img {
+      max-width: 100%;
+      max-height: 82vh;
+      border-radius: 12px;
+      touch-action: pinch-zoom;
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="header">
+      <div class="eyebrow">FUKUOKA AUTUMN TRIP · 2025</div>
+      <h1>福岡紅葉銀杏<br>攝影美食自由行</h1>
+      <div class="meta-row">
+        <span class="pill">11/21 – 11/24</span>
+        <span class="pill">🌅 06:57 日出 · 17:13 日落</span>
+        <span class="pill">📸 黃金時刻 15:45–17:13</span>
+      </div>
+      <a class="hotel-bar" href="https://maps.app.goo.gl/NVGJboCiDpPJp4hg7" target="_blank" rel="noopener">
+        <div>
+          <strong>Fukuoka UBL Hotel</strong>
+          <span>七隈線・藥院大通站 步行 5 分鐘</span>
+        </div>
+        <div class="hotel-arrow">地圖導航 ↗</div>
+      </a>
+    </header>
+
+    <nav class="day-nav" id="dayNav" aria-label="天數切換"></nav>
+
+    <section class="day-intro">
+      <h2 id="dayTitle"></h2>
+      <p class="day-note" id="dayNote"></p>
+    </section>
+
+    <section class="map-card">
+      <div class="map-touch" id="mapTouch">
+        <img id="mapImg" src="" alt="當日路線圖" />
+      </div>
+      <div class="map-footer">
+        <span class="map-hint">雙指可縮放檢視虛線路線</span>
+        <div class="map-btns">
+          <button class="chip-btn dark" id="zoomBtn" type="button">放大路線圖</button>
+          <a class="chip-btn" id="downloadBtn" href="" download>儲存圖片</a>
+        </div>
+      </div>
+    </section>
+
+    <div class="section-label" id="sectionLabel">當日行程</div>
+    <section class="cards-stack" id="cardsStack"></section>
+
+    <section class="tips-wrap" aria-label="旅遊備忘">
+      <details class="tip-box">
+        <summary>📸 紅葉・銀杏秘境拍攝時間</summary>
+        <ul>
+          <li><strong>Day 1 樂水園</strong>：17:00 閉園（最晚 16:30 入園），建議 15:40 抵達拍斜陽。</li>
+          <li><strong>Day 2 友泉亭公園</strong>：09:00 開園搶拍書院大廣間無人倒影。</li>
+          <li><strong>Day 3 竈門神社＆舞鶴公園</strong>：早上拍紅楓階梯，15:45–17:13 拍城跡黃昏。</li>
+        </ul>
+      </details>
+
+      <details class="tip-box">
+        <summary>🍓 草莓與麝香葡萄去哪買</summary>
+        <ul>
+          <li><strong>百貨青果區</strong>：大丸天神 B2、岩田屋 B2、博多阪急 B1（11 月下旬貨最齊）。</li>
+          <li><strong>飯店旁超市</strong>：BON REPAS 藥院六角店（營業至 22:00）。</li>
+          <li><strong>必吃甜點</strong>：博多站「伊都きんぐ」どらきんぐ生（整顆草莓生銅鑼燒）。</li>
+        </ul>
+      </details>
+
+      <details class="tip-box">
+        <summary>🍲 水炊鍋省錢＆公休提醒</summary>
+        <ul>
+          <li><strong>水たき 長野</strong>：11/23 週日公休，已改為とり田 藥院店。</li>
+          <li><strong>とり田省錢點法</strong>：點「單點水炊鍋」（約 ¥2,800/人）可免費續加蔬菜盤。</li>
+          <li><strong>平價替代</strong>：新三浦天神店、博多華味鳥，或 Day 4 吃博多站「濵田屋」午間御膳。</li>
+        </ul>
+      </details>
+    </section>
+  </div>
+
+  <div class="bottom-dock">
+    <button class="dock-btn" id="prevBtn" type="button">← 上一天</button>
+    <button class="dock-btn center" id="dockMapBtn" type="button">🗺 放大路線圖</button>
+    <button class="dock-btn" id="nextBtn" type="button">下一天 →</button>
+  </div>
+
+  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true">
+    <div class="lightbox-bar">
+      <span>支援雙指縮放拖曳</span>
+      <button class="lightbox-close" id="lightboxClose" type="button">✕ 關閉</button>
+    </div>
+    <div class="lightbox-scroll">
+      <img id="lightboxImg" src="" alt="放大路線圖" />
+    </div>
+  </div>
+
+  <script>
+    const TRIP_DATA = [
+      {
+        dayShort: "Day 1",
+        dateShort: "11/21",
+        date: "2025-11-21",
+        title: "抵達博多銀杏與庭園秘境",
+        note: "寄放行李後由櫛田神社順遊至樂水園（17:00 閉園，須於 16:30 前入園）",
+        image: "images/day1.jpg",
+        events: [
+          { time: "12:45", title: "飯店寄存行李", place: "Fukuoka UBL Hotel", transport: "福岡機場搭地鐵至藥院大通站步行 5 分" },
+          { time: "13:45", title: "享用一蘭豚骨拉麵", place: "一蘭 總本店" },
+          { time: "14:45", title: "參拜神社與拍攝夫婦銀杏", place: "櫛田神社" },
+          { time: "15:40", title: "住吉神社與樂水園拍紅葉", place: "楽水園", note: "17:00 閉園，須於 16:30 前入園" },
+          { time: "17:15", title: "逛駿河屋與買草莓銅鑼燒", place: "駿河屋 博多丸井店", note: "順道於博多站買伊都きんぐどらきんぐ生" },
+          { time: "19:00", title: "中洲屋台體驗在地晚餐", place: "中洲屋台" }
+        ]
+      },
+      {
+        dayShort: "Day 2",
+        dateShort: "11/22",
+        date: "2025-11-22",
+        title: "庭園晨拍鋼彈與水果採買",
+        note: "晚間改於百貨與飯店旁超市買草莓葡萄，免去西新大繞路",
+        image: "images/day2.jpg",
+        events: [
+          { time: "09:00", title: "友泉亭公園晨拍紅葉倒影", place: "友泉亭公園", transport: "飯店搭計程車約 10 分鐘", note: "09:00 開園搶拍無人庭園" },
+          { time: "11:00", title: "享用 A5 和牛壽喜燒", place: "和牛すきやき・しゃぶしゃぶ 神楽 天神店" },
+          { time: "13:00", title: "採購重機裝備人身部品", place: "RICOLAND 福岡店", transport: "天神搭計程車前往較省力" },
+          { time: "14:45", title: "拍攝等身大鋼彈與逛街", place: "三井購物廣場 LaLaport 福岡" },
+          { time: "17:30", title: "大名選品與寶可夢卡牌", place: "Bee本舗 福岡天神店", note: "順遊大名街區並於天神晚餐" },
+          { time: "20:30", title: "採買草莓與麝香葡萄宵夜", place: "大丸福岡天神店", note: "亦可至飯店旁 BON REPAS 藥院六角店購買" }
+        ]
+      },
+      {
+        dayShort: "Day 3",
+        dateShort: "11/23",
+        date: "2025-11-23",
+        title: "太宰府秘境與舞鶴公園黃昏",
+        note: "水たき長野週日公休，改訂とり田藥院店（可單點鍋省預算）",
+        image: "images/day3.jpg",
+        events: [
+          { time: "08:30", title: "竈門神社清晨拍攝紅葉", place: "宝満宮竈門神社", transport: "西鐵藥院站至太宰府站轉巴士約 10 分" },
+          { time: "10:30", title: "太宰府天滿宮參拜吃梅枝餅", place: "太宰府天滿宮", note: "參道可留意天山草莓大福" },
+          { time: "14:30", title: "大濠公園日本庭園拍秋景", place: "大濠公園日本庭園" },
+          { time: "15:45", title: "舞鶴公園黃昏拍攝銀杏紅葉", place: "舞鶴公園", note: "把握 15:45–17:13 日落黃金時刻" },
+          { time: "18:30", title: "享用博多名物水炊雞肉鍋", place: "博多水たき とり田 薬院店", note: "需提前預約，步行即可回飯店" }
+        ]
+      },
+      {
+        dayShort: "Day 4",
+        dateShort: "11/24",
+        date: "2025-11-24",
+        title: "博多站前採買與返台",
+        note: "集中博多站採買免去往返天神折返，20:55 長榮航空返台",
+        image: "images/day4.jpg",
+        events: [
+          { time: "10:00", title: "博多車站寄放大型行李", place: "JR 博多站" },
+          { time: "10:30", title: "採買免稅電器與伴手禮", place: "Yodobashi Camera 博多" },
+          { time: "12:30", title: "享用博多拉麵與百貨巡禮", place: "KITTE博多", note: "可至博多阪急 B1 買草莓與葡萄" },
+          { time: "14:00", title: "精品咖啡小憩與買甜點", place: "REC COFFEE 博多丸井店" },
+          { time: "18:00", title: "前往福岡機場搭長榮返台", place: "福岡機場國際線航廈", note: "20:55 長榮航空班機返台" }
+        ]
+      }
+    ];
+
+    let activeIndex = 0;
+    const STORAGE_KEY = "fuk_1121_1124_done";
+    const doneState = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+
+    const dayNav = document.getElementById("dayNav");
+    const dayTitle = document.getElementById("dayTitle");
+    const dayNote = document.getElementById("dayNote");
+    const mapImg = document.getElementById("mapImg");
+    const downloadBtn = document.getElementById("downloadBtn");
+    const sectionLabel = document.getElementById("sectionLabel");
+    const cardsStack = document.getElementById("cardsStack");
+    const lightbox = document.getElementById("lightbox");
+    const lightboxImg = document.getElementById("lightboxImg");
+
+    function renderNav() {
+      dayNav.innerHTML = "";
+      TRIP_DATA.forEach((day, idx) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "day-tab" + (idx === activeIndex ? " active" : "");
+        btn.innerHTML = `<span class="d-num">${day.dayShort}</span><span class="d-date">${day.dateShort}</span>`;
+        btn.addEventListener("click", () => {
+          activeIndex = idx;
+          render();
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        });
+        dayNav.appendChild(btn);
+      });
+    }
+
+    function renderDay() {
+      const day = TRIP_DATA[activeIndex];
+      dayTitle.textContent = `${day.dayShort}｜${day.title}`;
+      dayNote.textContent = day.note;
+
+      mapImg.src = day.image;
+      mapImg.alt = `${day.dayShort} ${day.title} 路線圖`;
+      downloadBtn.href = day.image;
+      downloadBtn.setAttribute("download", `fukuoka-day${activeIndex + 1}.jpg`);
+      sectionLabel.textContent = `SCHEDULE · ${day.events.length} 站`;
+
+      cardsStack.innerHTML = "";
+      day.events.forEach((ev, idx) => {
+        const key = `${day.date}_${idx}`;
+        const isDone = !!doneState[key];
+        const mapUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(ev.place + " 福岡")}`;
+
+        const card = document.createElement("article");
+        card.className = "event-card" + (isDone ? " done" : "");
+        card.innerHTML = `
+          <div class="event-head">
+            <div class="time-group">
+              <span class="step-badge">${idx + 1}</span>
+              <span class="time-text">${ev.time}</span>
+            </div>
+            <label class="done-toggle">
+              <input type="checkbox" ${isDone ? "checked" : ""} />
+              <span>完成</span>
+            </label>
+          </div>
+          <h3 class="event-title">${ev.title}</h3>
+          <div class="event-place">${ev.place}</div>
+          ${(ev.transport || ev.note) ? `
+            <div class="info-chips">
+              ${ev.transport ? `<div class="info-line">🚇 ${ev.transport}</div>` : ""}
+              ${ev.note ? `<div class="info-line tip">💡 ${ev.note}</div>` : ""}
+            </div>
+          ` : ""}
+          <a class="nav-action" href="${mapUrl}" target="_blank" rel="noopener">開啟 Google Maps 導航 ↗</a>
+        `;
+
+        const checkbox = card.querySelector("input[type='checkbox']");
+        checkbox.addEventListener("change", () => {
+          doneState[key] = checkbox.checked;
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(doneState));
+          card.classList.toggle("done", checkbox.checked);
+        });
+
+        cardsStack.appendChild(card);
+      });
+
+      document.getElementById("prevBtn").disabled = activeIndex === 0;
+      document.getElementById("nextBtn").disabled = activeIndex === TRIP_DATA.length - 1;
+    }
+
+    function render() {
+      renderNav();
+      renderDay();
+    }
+
+    function openLightbox() {
+      lightboxImg.src = TRIP_DATA[activeIndex].image;
+      lightbox.classList.add("open");
+    }
+
+    document.getElementById("prevBtn").addEventListener("click", () => {
+      if (activeIndex > 0) {
+        activeIndex--;
+        render();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+    });
+
+    document.getElementById("nextBtn").addEventListener("click", () => {
+      if (activeIndex < TRIP_DATA.length - 1) {
+        activeIndex++;
+        render();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+    });
+
+    document.getElementById("mapTouch").addEventListener("click", openLightbox);
+    document.getElementById("zoomBtn").addEventListener("click", openLightbox);
+    document.getElementById("dockMapBtn").addEventListener("click", openLightbox);
+    document.getElementById("lightboxClose").addEventListener("click", () => lightbox.classList.remove("open"));
+    lightbox.addEventListener("click", (e) => {
+      if (e.target === lightbox) lightbox.classList.remove("open");
+    });
+
+    render();
+  </script>
+</body>
+</html>
